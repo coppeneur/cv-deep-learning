@@ -20,11 +20,7 @@ def unpack_tar_gz(file_path, target_folder='data'):
     else:
         print(f"Target folder '{target_folder}' is not empty. Assuming the file is already unpacked.")
 
-
-def load_data(file_path):
-    data = pd.read_csv(file_path)
-    return data
-
+    return os.path.join(target_folder, 'fer2013', 'fer2013.csv')
 
 class FerDataset(Dataset):
     def __init__(self, csv_file: str, transform=None, mode='train'):
@@ -33,8 +29,14 @@ class FerDataset(Dataset):
         assert mode in ['train', 'val', 'test'], f"Invalid mode: {mode}"
         if mode == 'train':
             self.data = self.data[self.data['Usage'] == 'Training']
+            description = self.data.describe()
+            print(description)
         elif mode == 'val':
+            print("val mode activated")
             self.data = self.data[self.data['Usage'] == 'PublicTest']
+            print(len(self.data))
+            description = self.data.describe()
+            print(description)
         elif mode == 'test':
             self.data = self.data[self.data['Usage'] == 'PrivateTest']
 
@@ -44,8 +46,12 @@ class FerDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        image = np.fromstring(self.data['pixels'][idx], dtype=int, sep=' ').reshape(48, 48).astype(np.uint8)
-        label = int(self.data['emotion'][idx])
+        # TODO warum klappt der zugriff ueber den column name nicht
+        #image = np.fromstring(self.data.loc[idx, 'pixels'], dtype=int, sep=' ').reshape(48, 48).astype(np.uint8)
+        #label = int(self.data.loc[idx, 'emotion'])
+        image = np.fromstring(self.data.iloc[idx, 1], dtype=int, sep=' ').reshape(48, 48).astype(np.uint8)
+        label = int(self.data.iloc[idx, 0])
+
 
         if self.transform:
             image = self.transform(image)
