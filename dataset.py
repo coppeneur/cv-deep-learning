@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
+import torchvision.transforms as transforms
 
 import os
 import tarfile
@@ -50,3 +51,16 @@ class FerDataset(Dataset):
             image = self.transform(image)
 
         return image, label
+
+
+def get_dataloaders(file_path: str, train_transform: transforms.Compose, test_val_transform: transforms.Compose,
+                    batch_size: int):
+    train_dataset = FerDataset(file_path, transform=train_transform, mode='train')
+    val_dataset = FerDataset(file_path, transform=test_val_transform, mode='val')
+    test_dataset = FerDataset(file_path, transform=test_val_transform, mode='test')
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_loader, val_loader, test_loader
