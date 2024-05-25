@@ -128,4 +128,9 @@ def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accura
 
     plt.suptitle(pipeline_title, fontsize=16)
     plt.tight_layout()
+
+    # cut off the best val accuracy from the title and save the plot
+    plot_filename = os.path.join("bestmodels", f"{pipeline_title.split(' - Best Val')[0].replace(' ', '_').lower()}_plot.png")
+    plt.savefig(plot_filename)
+
     plt.show()
