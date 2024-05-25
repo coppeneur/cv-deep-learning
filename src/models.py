@@ -56,6 +56,233 @@ class SimpleCNN(nn.Module):
         return "SimpleCNN"
 
 
+class CNNWithBatchNorm(nn.Module):
+    def __init__(self):
+        super(CNNWithBatchNorm, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Linear(256 * 3 * 3, 512),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, 7)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(-1, 256 * 3 * 3)
+        x = self.classifier(x)
+        return x
+
+    def get_name(self):
+        return "CNNWithBatchNorm"
+
+
+class CNNWithLeakyReLU(nn.Module):
+    def __init__(self):
+        super(CNNWithLeakyReLU, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Linear(256 * 3 * 3, 512),
+            nn.LeakyReLU(0.1),
+            nn.Dropout(0.5),
+            nn.Linear(512, 7)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(-1, 256 * 3 * 3)
+        x = self.classifier(x)
+        return x
+
+    def get_name(self):
+        return "CNNWithLeakyReLU"
+
+
+class CNNWithMoreConvLayers(nn.Module):
+    def __init__(self):
+        super(CNNWithMoreConvLayers, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(32, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Linear(256 * 3 * 3, 512),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, 7)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(-1, 256 * 3 * 3)
+        x = self.classifier(x)
+        return x
+
+    def get_name(self):
+        return "CNNWithMoreConvLayers"
+
+
+class CNNWithSmallerKernels(nn.Module):
+    def __init__(self):
+        super(CNNWithSmallerKernels, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(32, 32, kernel_size=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(256, 256, kernel_size=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Linear(256 * 3 * 3, 512),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, 7)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(-1, 256 * 3 * 3)
+        x = self.classifier(x)
+        return x
+
+    def get_name(self):
+        return "CNNWithSmallerKernels"
+
+
+class ImprovedCNN(nn.Module):
+    def __init__(self):
+        super(ImprovedCNN, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(32, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.AdaptiveAvgPool2d((1, 1)),
+            nn.Flatten(),
+            nn.Linear(256, 512),
+            nn.BatchNorm1d(512),
+            nn.LeakyReLU(0.1),
+            nn.Dropout(0.5),
+            nn.Linear(512, 7)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = self.classifier(x)
+        return x
+
+    def get_name(self):
+        return "ImprovedCNN"
+
 ## TODO ACHTUNG kopiert nur zum testen
 # quelle https://github.com/shangeth/Facial-Emotion-Recognition-PyTorch-ONNX/blob/master/PyTorch/model.py
 class Face_Emotion_CNN(nn.Module):
