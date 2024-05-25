@@ -16,6 +16,10 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
 
     best_val_accuracy = 0.0
 
+    # prepare criteria and optimizer names for the pipeline title
+    crit_name = str(criterion).split('(')[0].strip()
+    opt_name = str(optimizer).split('(')[0].strip()
+
     for epoch in range(num_epochs):
         train_loss, train_accuracy = train_one_epoch(model, train_loader, criterion, optimizer, device)
         train_losses.append(train_loss)
@@ -32,11 +36,14 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
         # Save the best model
         if val_accuracy > best_val_accuracy:
             best_val_accuracy = val_accuracy
-            model_path = os.path.join("bestmodels", f"{model.get_name()}_best_model.pth")
+            model_path = os.path.join("bestmodels", f"{model.get_name()}_{crit_name}_{opt_name}_{epoch}_best_model.pth")
             torch.save(model.state_dict(), model_path)
             print(f"Best model saved with accuracy: {best_val_accuracy:.4f} as '{model_path}'")
 
-    plot_metrics_training(train_losses, val_losses, train_accuracies, val_accuracies)
+    # build a string to as the pipeline title, with the model name, cirterium, optimizer, and best validation accuracy / loss
+    pipeline_title = f"{model.get_name()} with {crit_name} and {opt_name} - Best Val Acc: {best_val_accuracy:.4f}"
+    plot_metrics_training(train_losses, val_losses, train_accuracies, val_accuracies, pipeline_title)
+
 
 def train_one_epoch(model, train_loader, criterion, optimizer, device):
     model.train()
@@ -95,7 +102,8 @@ def validate(model, val_loader, criterion, device):
     avg_accuracy = 100.0 * correct / total
     return avg_loss, avg_accuracy
 
-def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accuracies):
+
+def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accuracies, pipeline_title: str):
     epochs = range(1, len(train_losses) + 1)
 
     plt.figure(figsize=(12, 5))
@@ -118,5 +126,6 @@ def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accura
     plt.ylabel('Accuracy')
     plt.legend()
 
+    plt.suptitle(pipeline_title, fontsize=16)
     plt.tight_layout()
     plt.show()
