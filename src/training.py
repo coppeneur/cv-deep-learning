@@ -36,7 +36,7 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
         # Save the best model
         if val_accuracy > best_val_accuracy:
             best_val_accuracy = val_accuracy
-            model_path = os.path.join("bestmodels", f"{model.get_name()}_{crit_name}_{opt_name}_{epoch}_best_model.pth")
+            model_path = os.path.join("bestmodels", f"{model.get_name()}_{crit_name}_{opt_name}_best_model.pth")
             torch.save(model.state_dict(), model_path)
             print(f"Best model saved with accuracy: {best_val_accuracy:.4f} as '{model_path}'")
 
