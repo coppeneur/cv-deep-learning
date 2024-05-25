@@ -40,8 +40,7 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
             torch.save(model.state_dict(), model_path)
             print(f"Best model saved with accuracy: {best_val_accuracy:.4f} as '{model_path}'")
 
-    # build a string to as the pipeline title, with the model name, cirterium, optimizer, and best validation accuracy / loss
-    pipeline_title = f"{model.get_name()} with {crit_name} and {opt_name} - Best Val Acc: {best_val_accuracy:.4f}"
+     pipeline_title = f"{model.get_name()} with {crit_name} and {opt_name} - Best Val Acc: {best_val_accuracy:.4f}"
     plot_metrics_training(train_losses, val_losses, train_accuracies, val_accuracies, pipeline_title)
 
 
