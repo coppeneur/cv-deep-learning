@@ -1,9 +1,5 @@
 # cv-deep-learning
 
-Sure, here's the formatted README section in Markdown format:
-
----
-
 ## Emotion Detection Demo
 
 The `demo.py` script is designed to perform emotion detection on a video file or live webcam feed using a pre-trained convolutional neural network (CNN) model. The script automatically loads the best pre-trained model.
