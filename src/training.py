@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 
 
-def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
+def train(model, train_loader, val_loader, train_class_weights, num_epochs=10):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
@@ -16,12 +16,12 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
 
     best_val_accuracy = 0.0
 
-    # prepare criteria and optimizer names for the pipeline title
-    crit_name = str(criterion).split('(')[0].strip()
-    opt_name = str(optimizer).split('(')[0].strip()
+    criterion_train = torch.nn.CrossEntropyLoss(train_class_weights)
+    criterion = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
     for epoch in range(num_epochs):
-        train_loss, train_accuracy = train_one_epoch(model, train_loader, criterion, optimizer, device)
+        train_loss, train_accuracy = train_one_epoch(model, train_loader, criterion_train, optimizer, device)
         train_losses.append(train_loss)
         train_accuracies.append(train_accuracy)
 
@@ -36,11 +36,11 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
         # Save the best model
         if val_accuracy > best_val_accuracy:
             best_val_accuracy = val_accuracy
-            model_path = os.path.join("bestmodels", f"{model.get_name()}_{crit_name}_{opt_name}_best_model.pth")
+            model_path = os.path.join("bestmodels", f"{model.get_name()}_{epoch+1}_best_model.pth")
             torch.save(model.state_dict(), model_path)
             print(f"Best model saved with accuracy: {best_val_accuracy:.4f} as '{model_path}'")
 
-    pipeline_title = f"{model.get_name()} with {crit_name} and {opt_name} - Best Val Acc: {best_val_accuracy:.4f}"
+    pipeline_title = f"{model.get_name()} - Best Val Acc: {best_val_accuracy:.4f}"
     plot_metrics_training(train_losses, val_losses, train_accuracies, val_accuracies, pipeline_title)
 
 
@@ -65,9 +65,6 @@ def train_one_epoch(model, train_loader, criterion, optimizer, device):
         _, predicted = torch.max(outputs, 1)
         correct += (predicted == labels).sum().item()
         total += labels.size(0)
-        accuracy = 100.0 * correct / total
-
-        progress_bar.set_postfix({'Train Loss': total_loss / (total), 'Accuracy': accuracy})
 
     avg_loss = total_loss / len(train_loader)
     avg_accuracy = 100.0 * correct / total
@@ -93,9 +90,6 @@ def validate(model, val_loader, criterion, device):
             _, predicted = torch.max(outputs, 1)
             correct += (predicted == labels).sum().item()
             total += labels.size(0)
-            accuracy = 100.0 * correct / total
-
-            progress_bar.set_postfix({'Val Loss': total_loss / (total), 'Accuracy': accuracy})
 
     avg_loss = total_loss / len(val_loader)
     avg_accuracy = 100.0 * correct / total
@@ -128,8 +122,8 @@ def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accura
     plt.suptitle(pipeline_title, fontsize=16)
     plt.tight_layout()
 
-    # cut off the best val accuracy from the title and save the plot
-    plot_filename = os.path.join("bestmodels", f"{pipeline_title.split(' - Best Val')[0].replace(' ', '_').lower()}_plot.png")
+    # Save the plot
+    plot_filename = os.path.join("bestmodels", f"{pipeline_title.replace(' ', '_').lower()}_plot.png")
     plt.savefig(plot_filename)
 
     plt.show()
