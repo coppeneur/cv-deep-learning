@@ -2,6 +2,7 @@ import torch
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report
+from torchvision import transforms
 import pandas as pd
 from tqdm import tqdm
 import numpy as np
@@ -85,3 +86,51 @@ def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accura
 
     plt.tight_layout()
     plt.show()
+
+
+def get_activations(model, input_image):
+    model.eval()
+
+    activations = {}
+
+    def hook(module, input, output):
+        activations[module] = output.detach()
+
+    hooks = [module.register_forward_hook(hook)
+             for name, module in model.named_modules()
+             if isinstance(module, (torch.nn.Conv2d, torch.nn.Linear))]
+
+    with torch.no_grad():
+        _ = model(input_image)
+
+    for hook_handle in hooks:
+        hook_handle.remove()
+
+    return activations
+
+
+def plot_activations(model, input_image, emotion_name):
+    if isinstance(input_image, torch.Tensor) and input_image.dim() == 3:
+        transform = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5], std=[0.5])
+        ])
+        input_image = transform(input_image).unsqueeze(0)
+
+    activations = get_activations(model, input_image)
+
+    for layer, activation in activations.items():
+        if len(activation.shape) == 4:
+            num_channels = activation.shape[1]
+            num_rows = (num_channels + 3) // 4
+            plt.figure(figsize=(12, 3 * num_rows))
+            plt.suptitle(emotion_name, fontsize=16, fontweight='bold', color='black')
+            for i in range(num_channels):
+                plt.subplot(num_rows, 4, i+1)
+                plt.imshow(activation[0, i].cpu(), cmap='gray')
+                plt.title(f'Channel: {i+1}', fontsize=10, fontweight='bold', color='black')
+                plt.axis('off')
+            plt.tight_layout(rect=[0, 0, 1, 0.96])
+            plt.show()
+        break  # Only plot the activations for the first layer
