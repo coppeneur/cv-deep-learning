@@ -443,10 +443,10 @@ class Final_ComplexCNN(nn.Module):
             nn.Linear(256 * 3 * 3, 512),
             nn.ReLU(),
             nn.Dropout(0.5),
-            nn.Linear(512, 512),
+            nn.Linear(512, 256),
             nn.ReLU(),
             nn.Dropout(0.5),
-            nn.Linear(512, 7)
+            nn.Linear(256, 7)
         )
 
     def forward(self, x):

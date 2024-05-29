@@ -38,21 +38,31 @@ def evaluate_model(model, test_loader, criterion):
 
     print(f'Test Loss: {avg_loss:.4f}, Test Accuracy: {accuracy:.4f}%')
 
-    plot_confusion_matrix(all_labels, all_preds, class_names)
+    plot_both_confusion_matrices(all_labels, all_preds, class_names)
     print_classification_report(all_labels, all_preds, class_names)
 
 
-def plot_confusion_matrix(labels, preds, classes, normalize=True):
+def plot_confusion_matrix(labels, preds, classes, normalize=True, ax=None):
     cm = confusion_matrix(labels, preds)
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
     df_cm = pd.DataFrame(cm, index=classes, columns=classes)
-    plt.figure(figsize=(10, 7))
-    sns.heatmap(df_cm, annot=True, fmt='.2f' if normalize else 'd', cmap='Blues')
-    plt.xlabel('Predicted')
-    plt.ylabel('Actual')
-    plt.title('Normalized Confusion Matrix' if normalize else 'Confusion Matrix')
+    sns.heatmap(df_cm, annot=True, fmt='.2f' if normalize else 'd', cmap='Blues', ax=ax)
+    ax.set_xlabel('Predicted')
+    ax.set_ylabel('Actual')
+    ax.set_title('Normalized Confusion Matrix' if normalize else 'Confusion Matrix')
+
+def plot_both_confusion_matrices(labels, preds, classes):
+    fig, axes = plt.subplots(1, 2, figsize=(20, 7))
+
+    # Plot non-normalized confusion matrix
+    plot_confusion_matrix(labels, preds, classes, normalize=False, ax=axes[0])
+
+    # Plot normalized confusion matrix
+    plot_confusion_matrix(labels, preds, classes, normalize=True, ax=axes[1])
+
     plt.show()
+
 
 
 def print_classification_report(labels, preds, classes):
