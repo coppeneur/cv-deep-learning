@@ -58,7 +58,7 @@ def main(video_path=None):
         transforms.Normalize((0.5,), (0.5,))
     ])
 
-    model = m.load_model(m.SimpleCNN(), 'bestmodels/Final_IntermediateCNN_CrossEntropyLoss_Adam_best_model.pth')
+    model = m.load_model(m.Final_IntermediateCNN(), 'bestmodels/Final_IntermediateCNN_CrossEntropyLoss_Adam_best_model.pth')
     model.eval()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
