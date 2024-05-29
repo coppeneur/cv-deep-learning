@@ -10,8 +10,8 @@ Additionally, the `vit_transformer.ipynb` notebook contains the code for testing
 
 ## Emotion Detection Demo
 
-The `demo.py` script is designed to perform emotion detection on a **video file** or **live webcam** feed using a our chosen model "IntermediateCNN". 
-The script automatically loads the best pre-trained model.
+The `demo.py` script is designed to perform emotion detection on either a video file or a live webcam feed using our chosen model, "IntermediateCNN."
+It plots the detected emotions after processing each frame of the video or webcam feed.
 
 ### Prerequisites
 
@@ -33,7 +33,7 @@ python demo.py [--video <path_to_video>]
 
 - `--video` (optional): Path to a video file. If not provided, the script will use the webcam for real-time emotion detection.
 - `-h` or `--help`: Displays the help message.
-- 
+
 ### Examples
 
 #### Using a Video File
