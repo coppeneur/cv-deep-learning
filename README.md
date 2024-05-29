@@ -2,7 +2,8 @@
 
 ## Emotion Detection Demo
 
-The `demo.py` script is designed to perform emotion detection on a video file or live webcam feed using a pre-trained convolutional neural network (CNN) model. The script automatically loads the best pre-trained model.
+The `demo.py` script is designed to perform emotion detection on a **video file** or **live webcam** feed using a our chosen model "IntermediateCNN". 
+The script automatically loads the best pre-trained model.
 
 ### Prerequisites
 
@@ -28,10 +29,10 @@ python demo.py [--video <path_to_video>]
 
 #### Using a Video File
 
-To run the demo on a video file, use the following command:
+To run the demo on our test video file, use the following command:
 
 ```bash
-python demo.py --video path/to/your/video.mp4
+python demo.py --video surprised-happy.mp4
 ```
 
 #### Using Webcam

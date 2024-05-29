@@ -8,6 +8,11 @@ import tarfile
 
 
 def unpack_tar_gz(file_path):
+    """
+    Unpacks a .tar.gz file to the 'data' folder
+    :param file_path: given tar file path
+    :return: csv file path
+    """
     data_folder = 'data'
     model_folder = 'bestmodels'
     if not os.path.exists(data_folder):
@@ -32,6 +37,9 @@ def unpack_tar_gz(file_path):
 
 
 class FerDataset(Dataset):
+    """
+    Custom dataset class for the FER2013 dataset
+    """
 
     def __init__(self, csv_file: str, transform_train=None, mode='train'):
         self.data = pd.read_csv(csv_file)
@@ -48,6 +56,11 @@ class FerDataset(Dataset):
             self.transform = self.getDefaultTransform()
 
     def getDefaultTransform(self):
+        """
+        Get the default transform for the dataset.
+        This transform converts the image to a tensor and normalizes it.
+        :return: default transform
+        """
         return transforms.Compose([
             transforms.ToPILImage(),
             transforms.ToTensor(),
@@ -58,9 +71,6 @@ class FerDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        # TODO warum klappt der zugriff ueber den column name nicht
-        # image = np.fromstring(self.data.loc[idx, 'pixels'], dtype=int, sep=' ').reshape(48, 48).astype(np.uint8)
-        # label = int(self.data.loc[idx, 'emotion'])
         image = np.fromstring(self.data.iloc[idx, 1], dtype=int, sep=' ').reshape(48, 48).astype(np.uint8)
         label = int(self.data.iloc[idx, 0])
 
@@ -71,6 +81,13 @@ class FerDataset(Dataset):
 
 
 def get_data_loaders(csv_file: str, batch_size=32, transform_train=None):
+    """
+    Get data loaders for the FER2013 dataset
+    :param csv_file: path to the csv file
+    :param batch_size: batch size
+    :param transform_train: training transform
+    :return: train, validation, and test data loaders
+    """
     train_dataset = FerDataset(csv_file, transform_train=transform_train, mode='train')
     val_dataset = FerDataset(csv_file, mode='val')
     test_dataset = FerDataset(csv_file, mode='test')

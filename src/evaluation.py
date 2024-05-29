@@ -9,6 +9,13 @@ import numpy as np
 
 
 def evaluate_model(model, test_loader, criterion):
+    """
+    Evaluate a given model on a given test_loader using a given criterion
+    :param model: model to evaluate
+    :param test_loader: test loader
+    :param criterion: criterion
+    :return: None
+    """
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
@@ -19,6 +26,7 @@ def evaluate_model(model, test_loader, criterion):
     all_preds = []
     all_labels = []
 
+    # Evaluate the model
     with torch.no_grad():
         for images, labels in tqdm(test_loader, desc="Evaluating"):
             images, labels = images.to(device), labels.to(device)
@@ -38,11 +46,21 @@ def evaluate_model(model, test_loader, criterion):
 
     print(f'Test Loss: {avg_loss:.4f}, Test Accuracy: {accuracy:.4f}%')
 
+    # Plot confusion matrix and classification report
     plot_both_confusion_matrices(all_labels, all_preds, class_names)
     print_classification_report(all_labels, all_preds, class_names)
 
 
 def plot_confusion_matrix(labels, preds, classes, normalize=True, ax=None):
+    """
+    Helper function to plot the confusion matrix for the given labels and predictions with the given classes.
+    :param labels: list of true labels
+    :param preds: list of predicted labels
+    :param classes: class names
+    :param normalize: boolean to normalize the confusion matrix
+    :param ax: axis to plot the confusion matrix
+    :return: None
+    """
     cm = confusion_matrix(labels, preds)
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
@@ -53,6 +71,13 @@ def plot_confusion_matrix(labels, preds, classes, normalize=True, ax=None):
     ax.set_title('Normalized Confusion Matrix' if normalize else 'Confusion Matrix')
 
 def plot_both_confusion_matrices(labels, preds, classes):
+    """
+    Plot both normalized and non-normalized confusion matrices for the given labels and predictions with the given classes.
+    :param labels: list of true labels
+    :param preds: list of predicted labels
+    :param classes: class names
+    :return: None
+    """
     fig, axes = plt.subplots(1, 2, figsize=(20, 7))
 
     # Plot non-normalized confusion matrix
@@ -66,12 +91,27 @@ def plot_both_confusion_matrices(labels, preds, classes):
 
 
 def print_classification_report(labels, preds, classes):
+    """
+    Print the classification report for the given labels and predictions with the given classes.
+    :param labels: list of true labels
+    :param preds: list of predicted labels
+    :param classes: class names
+    :return: None
+    """
     report = classification_report(labels, preds, target_names=classes, zero_division=0)
     print('Classification Report:\n')
     print(report)
 
 
 def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accuracies):
+    """
+    Plot the training and validation losses and accuracies
+    :param train_losses: training losses
+    :param val_losses: validation losses
+    :param train_accuracies: training accuracies
+    :param val_accuracies: validation accuracies
+    :return: None
+    """
     epochs = range(1, len(train_losses) + 1)
 
     plt.figure(figsize=(12, 5))
@@ -99,6 +139,12 @@ def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accura
 
 
 def get_activations(model, input_image):
+    """
+    Get the activations of the model for a given input image.
+    :param model: given model
+    :param input_image: image to get the activations for
+    :return: activations
+    """
     model.eval()
 
     activations = {}
@@ -120,6 +166,13 @@ def get_activations(model, input_image):
 
 
 def plot_activations(model, input_image, emotion_name):
+    """
+    Plot the first layer activations of the model for a given input image.
+    :param model: model
+    :param input_image: image to get the activations for
+    :param emotion_name: emotion name for the title
+    :return:
+    """
     if isinstance(input_image, torch.Tensor) and input_image.dim() == 3:
         transform = transforms.Compose([
             transforms.ToPILImage(),

@@ -9,49 +9,17 @@ from torch.utils.data import DataLoader, Dataset
 
 
 def load_model(model_class, model_path):
+    """
+    Load a given model from a given path
+    :param model_class: model class
+    :param model_path: model path
+    :return: loaded model
+    """
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = model_class
     model.load_state_dict(torch.load(model_path))
     model.to(device)
     return model
-
-
-class SimpleCNN(nn.Module):
-    def __init__(self):
-        super(SimpleCNN, self).__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(128, 256, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2)
-        )
-
-        self.classifier = nn.Sequential(
-            nn.Linear(256 * 3 * 3, 512),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(512, 7)
-        )
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(-1, 256 * 3 * 3)
-        x = self.classifier(x)
-        return x
-
-    def get_name(self):
-        return "SimpleCNN"
 
 
 class CNNWithBatchNorm(nn.Module):
@@ -180,52 +148,6 @@ class CNNWithMoreConvLayers(nn.Module):
         return "CNNWithMoreConvLayers"
 
 
-class CNNWithSmallerKernels(nn.Module):
-    def __init__(self):
-        super(CNNWithSmallerKernels, self).__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(32, 32, kernel_size=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(64, 64, kernel_size=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(128, 128, kernel_size=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(128, 256, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(256, 256, kernel_size=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2)
-        )
-
-        self.classifier = nn.Sequential(
-            nn.Linear(256 * 3 * 3, 512),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(512, 7)
-        )
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(-1, 256 * 3 * 3)
-        x = self.classifier(x)
-        return x
-
-    def get_name(self):
-        return "CNNWithSmallerKernels"
-
-
 class ImprovedCNN(nn.Module):
     def __init__(self):
         super(ImprovedCNN, self).__init__()
@@ -282,59 +204,6 @@ class ImprovedCNN(nn.Module):
         return "ImprovedCNN"
 
 
-class ComplexCNN(nn.Module):
-    def __init__(self):
-        super(ComplexCNN, self).__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=3, padding=1),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
-            nn.BatchNorm2d(128),
-            nn.ReLU(),
-            nn.Conv2d(128, 128, kernel_size=3, padding=1),
-            nn.BatchNorm2d(128),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(128, 256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.Conv2d(256, 256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(256, 512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU(),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-        )
-        self.classifier = nn.Sequential(
-            nn.Linear(512 * 3 * 3, 512),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(512, 7)
-        )
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)
-        x = self.classifier(x)
-        return x
-
-    def get_name(self):
-        return "ComplexCNN"
-
-
 class Final_SimpleCNN(nn.Module):
     def __init__(self):
         super(Final_SimpleCNN, self).__init__()
@@ -363,6 +232,7 @@ class Final_SimpleCNN(nn.Module):
 
     def get_name(self):
         return "Final_SimpleCNN"
+
 
 class Final_IntermediateCNN(nn.Module):
     def __init__(self):
@@ -457,8 +327,3 @@ class Final_ComplexCNN(nn.Module):
 
     def get_name(self):
         return "Final_ComplexCNN"
-
-
-
-
-

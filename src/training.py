@@ -5,6 +5,17 @@ import os
 
 
 def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
+    """
+    Train the given model using the given train and validation loaders, criterion, optimizer, and number of epochs.
+    Will save the best model based on the validation accuracy and plot the training and validation metrics.
+    :param model: model to train
+    :param train_loader: training loader
+    :param val_loader: validation loader
+    :param criterion: criterion
+    :param optimizer: optimizer
+    :param num_epochs: number of epochs with default 10
+    :return: None
+    """
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
@@ -21,10 +32,12 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
     opt_name = str(optimizer).split('(')[0].strip()
 
     for epoch in range(num_epochs):
+        # train the model
         train_loss, train_accuracy = train_one_epoch(model, train_loader, criterion, optimizer, device)
         train_losses.append(train_loss)
         train_accuracies.append(train_accuracy)
 
+        # validate the model
         val_loss, val_accuracy = validate(model, val_loader, criterion, device)
         val_losses.append(val_loss)
         val_accuracies.append(val_accuracy)
@@ -45,6 +58,15 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
 
 
 def train_one_epoch(model, train_loader, criterion, optimizer, device):
+    """
+    Train the given model for one epoch using the given train loader, criterion, optimizer, and device.
+    :param model: model to train
+    :param train_loader: training loader
+    :param criterion: criterion
+    :param optimizer: optimizer
+    :param device: device
+    :return: average loss and accuracy for the epoch
+    """
     model.train()
     total_loss = 0.0
     correct = 0
@@ -62,6 +84,7 @@ def train_one_epoch(model, train_loader, criterion, optimizer, device):
 
         total_loss += loss.item()
 
+        # calculate accuracy
         _, predicted = torch.max(outputs, 1)
         correct += (predicted == labels).sum().item()
         total += labels.size(0)
@@ -75,6 +98,14 @@ def train_one_epoch(model, train_loader, criterion, optimizer, device):
 
 
 def validate(model, val_loader, criterion, device):
+    """
+    Validate the given model using the given validation loader, criterion, and device.
+    :param model: model to validate
+    :param val_loader: validation loader
+    :param criterion: criterion
+    :param device: device
+    :return: average loss and accuracy for the validation
+    """
     model.eval()
     total_loss = 0.0
     correct = 0
@@ -90,6 +121,7 @@ def validate(model, val_loader, criterion, device):
 
             total_loss += loss.item()
 
+            # calculate accuracy
             _, predicted = torch.max(outputs, 1)
             correct += (predicted == labels).sum().item()
             total += labels.size(0)
@@ -103,6 +135,16 @@ def validate(model, val_loader, criterion, device):
 
 
 def plot_metrics_training(train_losses, val_losses, train_accuracies, val_accuracies, pipeline_title: str):
+    """
+    Plots the training and validation losses and accuracies for the given metrics for all epochs.
+    The plot is saved as a file with the pipeline title.
+    :param train_losses:
+    :param val_losses:
+    :param train_accuracies:
+    :param val_accuracies:
+    :param pipeline_title:
+    :return: None
+    """
     epochs = range(1, len(train_losses) + 1)
 
     plt.figure(figsize=(12, 5))
