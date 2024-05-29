@@ -2,9 +2,11 @@
 
 ## Overview
 
-This repository contains the code for the assignment 2of the course "Computer Vision". Our main pipeline is the `emotion_detection.ipynb` notebook which contains the code for training, evaluating the emotion detection model.
-The src folder contains the main logic and code for the pipeline. We have separated the code into different modules for better organization.
-The `vit_transformer.ipynb` notebook contains the code for testing the vit model on the FER2013 dataset.
+This repository contains the code for Assignment 2 of the "Computer Vision" course. 
+Our primary pipeline is the `emotion_detection.ipynb` notebook, which includes the code for training and evaluating the emotion detection model. 
+The src folder contains the main logic and code for the pipeline, organized into different modules for better clarity. 
+Additionally, the `vit_transformer.ipynb` notebook contains the code for testing the ViT model on the FER2013 dataset.
+
 
 ## Emotion Detection Demo
 
