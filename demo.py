@@ -4,6 +4,8 @@ import cv2
 from torchvision import transforms
 from PIL import Image
 import numpy as np
+import matplotlib.pyplot as plt
+from collections import Counter
 from src import models as m
 
 
@@ -26,6 +28,7 @@ def main(video_path=None):
     emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
     yellow_color = (0, 255, 255)
     red_color = (0, 0, 255)
+    emotion_counts = Counter()
 
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
@@ -34,7 +37,7 @@ def main(video_path=None):
         transforms.Normalize((0.5,), (0.5,))
     ])
 
-    model = m.load_model(m.SimpleCNN(), 'bestmodels/SimpleCNN_best_model_30_epochs.pth')
+    model = m.load_model(m.SimpleCNN(), 'bestmodels/SimpleCNN_best_model_test.pth')
     model.eval()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
@@ -66,6 +69,7 @@ def main(video_path=None):
             probabilities = get_emotion_prediction(roi_gray, model, device, transform)
 
             max_idx = np.argmax(probabilities)
+            emotion_counts[emotion_labels[max_idx]] += 1
 
             for i, (emotion, prob) in enumerate(zip(emotion_labels, probabilities)):
                 text = f"{emotion}: {prob:.2f}"
@@ -79,8 +83,23 @@ def main(video_path=None):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
+        #TODO auswertung
+
     cap.release()
     cv2.destroyAllWindows()
+    # Plot the emotions detected
+    emotions, counts = zip(*emotion_counts.items())
+
+    # print the total number of emotions detected
+    print(f'Total number of frames: {sum(counts)}')
+
+    plt.figure(figsize=(10, 5))
+    plt.bar(emotions, counts, color='skyblue')
+    plt.xlabel('Emotions')
+    plt.ylabel('Frames')
+    plt.title('Emotion Detection Summary')
+    plt.show()
+
 
 
 if __name__ == '__main__':
