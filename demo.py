@@ -38,7 +38,7 @@ def main(video_path=None):
     ])
 
     # TODO add best model path
-    model = m.load_model(m.SimpleCNN(), 'bestmodels/SimpleCNN_best_model_test.pth')
+    model = m.load_model(m.SimpleCNN(), 'bestmodels/Final_IntermediateCNN_CrossEntropyLoss_Adam_best_model.pth')
     model.eval()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
