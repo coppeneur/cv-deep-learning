@@ -1,5 +1,11 @@
 # cv-deep-learning
 
+## Overview
+
+This repository contains the code for the assignment 2of the course "Computer Vision". Our main pipeline is the `emotion_detection.ipynb` notebook which contains the code for training, evaluating the emotion detection model.
+The src folder contains the main logic and code for the pipeline. We have separated the code into different modules for better organization.
+The `vit_transformer.ipynb` notebook contains the code for testing the vit model on the FER2013 dataset.
+
 ## Emotion Detection Demo
 
 The `demo.py` script is designed to perform emotion detection on a **video file** or **live webcam** feed using a our chosen model "IntermediateCNN". 
@@ -24,7 +30,8 @@ python demo.py [--video <path_to_video>]
 ### Arguments
 
 - `--video` (optional): Path to a video file. If not provided, the script will use the webcam for real-time emotion detection.
-
+- `-h` or `--help`: Displays the help message.
+- 
 ### Examples
 
 #### Using a Video File
