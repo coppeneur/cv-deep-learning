@@ -333,3 +333,132 @@ class ComplexCNN(nn.Module):
 
     def get_name(self):
         return "ComplexCNN"
+
+
+class Final_SimpleCNN(nn.Module):
+    def __init__(self):
+        super(Final_SimpleCNN, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(16, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Linear(32 * 12 * 12, 128),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(128, 7)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(-1, 32 * 12 * 12)
+        x = self.classifier(x)
+        return x
+
+    def get_name(self):
+        return "Final_SimpleCNN"
+
+class Final_IntermediateCNN(nn.Module):
+    def __init__(self):
+        super(Final_IntermediateCNN, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Linear(256 * 3 * 3, 512),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, 7)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(-1, 256 * 3 * 3)
+        x = self.classifier(x)
+        return x
+
+    def get_name(self):
+        return "Final_IntermediateCNN"
+
+
+class Final_ComplexCNN(nn.Module):
+    def __init__(self):
+        super(Final_ComplexCNN, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.Conv2d(32, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Linear(256 * 3 * 3, 512),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, 512),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, 7)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(-1, 256 * 3 * 3)
+        x = self.classifier(x)
+        return x
+
+    def get_name(self):
+        return "Final_ComplexCNN"
+
+
+
+
+
