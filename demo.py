@@ -37,6 +37,7 @@ def main(video_path=None):
         transforms.Normalize((0.5,), (0.5,))
     ])
 
+    # TODO add best model path
     model = m.load_model(m.SimpleCNN(), 'bestmodels/SimpleCNN_best_model_test.pth')
     model.eval()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -83,14 +84,10 @@ def main(video_path=None):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-        #TODO auswertung
-
     cap.release()
     cv2.destroyAllWindows()
-    # Plot the emotions detected
     emotions, counts = zip(*emotion_counts.items())
 
-    # print the total number of emotions detected
     print(f'Total number of frames: {sum(counts)}')
 
     plt.figure(figsize=(10, 5))
